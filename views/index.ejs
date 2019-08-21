@@ -25,8 +25,10 @@ html, body{
 <body>
 
 <div class="container center-block text-center">
-	<img id="slidegame_img" class="jqPuzzle" src="<%= image_url %>"/>
+  <img id="slidegame_img" class="jqPuzzle" src="<%= image_url %>"/>
 </div>
+
+<hr/>
 
 <div class="container">
   <table class="table table-bordered">
@@ -64,7 +66,7 @@ var slide_settings = {
         var moves = parseInt( results.moves );
         var seconds = parseInt( results.seconds );
 
-        //alert( "name = " + name + ", results.moves = " + results.moves + ", results.seconds = " + results.seconds );
+        alert( "name = " + name + ", results.moves = " + results.moves + ", results.seconds = " + results.seconds );
         postScore( name, seconds, moves );
       }
     },
@@ -95,7 +97,7 @@ $(function(){
   var t = $('img.jqPuzzle');
   t.jqPuzzle( slide_settings, slide_texts );
 
-  getItems();
+  getScores();
 });
 
 function getScores(){
@@ -104,16 +106,18 @@ function getScores(){
     url: '/scores',
     type: 'GET',
     success: function( scores ){
-      scores.forEach( function( score ){
-        var tr = '<tr>'
-          + '<td>' + score.name + '</td>'
-          + '<td>' + score.seconds + '</td>'
-          + '<td>' + score.moves + '</td>'
-          + '<td>' + timestamp2datetime( score.created ) + '</td>'
-          //+ '<td><a href="#" class="btn btn-danger" onClick="deleteScore(' + item.id  + ');">DELETE</a></td>'
-          + '</tr>';
-        $('#scores_table_tbody').append( tr );
-      });
+      if( scores && scores.status ){
+        scores.results.forEach( function( score ){
+          var tr = '<tr>'
+            + '<td>' + score.name + '</td>'
+            + '<td>' + score.seconds + '</td>'
+            + '<td>' + score.moves + '</td>'
+            + '<td>' + timestamp2datetime( score.created ) + '</td>'
+            //+ '<td><a href="#" class="btn btn-danger" onClick="deleteScore(' + item.id  + ');">DELETE</a></td>'
+            + '</tr>';
+          $('#scores_table_tbody').append( tr );
+        });
+      }
     },
     error: function( err ){
     }
@@ -147,7 +151,7 @@ function postScore( name, seconds, moves ){
     success: function( result ){
       getScores();
     },
-    error: function( err ){
+    error: function( err, text ){
     }
   });
 }

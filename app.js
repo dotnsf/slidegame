@@ -30,6 +30,7 @@ app.get( '/', function( req, res ){
 
 
 app.post( '/score', function( req, res ){
+  res.contentType( 'application/json; charset=utf-8' );
   var sql = 'insert into scores set ?';
   mysql.query( sql, { name: req.body.name, seconds: req.body.seconds, moves: req.body.moves, created: ( new Date() ).getTime() }, function( err, result ){
     if( err ){
@@ -44,6 +45,7 @@ app.post( '/score', function( req, res ){
 });
 
 app.get( '/scores', function( req, res ){
+  res.contentType( 'application/json; charset=utf-8' );
   var sql = 'select * from scores order by created desc';
   mysql.query( sql, function( err, results, fields ){
     if( err ){
@@ -58,6 +60,7 @@ app.get( '/scores', function( req, res ){
 });
 
 app.delete( '/score/:id', function( req, res ){
+  res.contentType( 'application/json; charset=utf-8' );
   var id = req.params.id;
   if( id ){
     var sql = 'delete from scores where id = ' + id;
